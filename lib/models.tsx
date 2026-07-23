@@ -25,14 +25,6 @@ const defaultLogo = (
 
 export const modelList: Model[] = [
   {
-    id: "@cf/zai-org/glm-5.2",
-    name: "glm-5.2",
-    logo: <ZhiPuLogo />,
-    type: "Text Generation",
-    provider: "workers-ai",
-    tag: ["new"],
-  },
-  {
     id: "@cf/moonshotai/kimi-k2.6",
     name: "kimi-k2.6",
     logo: <KIMILogo />,
@@ -85,6 +77,14 @@ export const modelList: Model[] = [
     type: "Text Generation",
     input: ["image"],
     provider: "workers-ai",
+  },
+  {
+    id: "@cf/zai-org/glm-5.2",
+    name: "glm-5.2",
+    logo: <ZhiPuLogo />,
+    type: "Text Generation",
+    provider: "workers-ai",
+    tag: ["new"],
   },
   {
     id: "@cf/bytedance/stable-diffusion-xl-lightning",
