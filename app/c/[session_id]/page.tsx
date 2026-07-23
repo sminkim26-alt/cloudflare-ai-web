@@ -85,7 +85,7 @@ const Page = () => {
   }, [initMessages, setMessages, loaded]);
 
   useEffect(() => {
-    if (isNew && initMessages) {
+    if (isNew && initMessages && initMessages.length > 0) {
       const text = initMessages[0].parts.find((i) => i.type === "text")?.text;
       const files = initMessages[0].parts.filter((i) => i.type === "file");
       if (text) {

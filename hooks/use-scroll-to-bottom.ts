@@ -1,4 +1,3 @@
-import { debounce } from "next/dist/server/utils";
 import {
   startTransition,
   useCallback,
@@ -6,6 +5,17 @@ import {
   useRef,
   useState,
 } from "react";
+
+function debounce<T extends (...args: unknown[]) => void>(
+  fn: T,
+  delay: number,
+): (...args: Parameters<T>) => void {
+  let timer: ReturnType<typeof setTimeout>;
+  return (...args: Parameters<T>) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
+  };
+}
 
 export const useScrollToBottom = () => {
   const chatListRef = useRef<HTMLDivElement>(null);
