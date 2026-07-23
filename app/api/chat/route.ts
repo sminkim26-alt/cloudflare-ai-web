@@ -92,7 +92,7 @@ export async function POST(request: Request) {
     system: [
       "You are a helpful assistant. Follow the user's instructions carefully. Respond using Markdown.",
       "When the user asks you to generate, create, draw, or make an image, picture, logo, illustration, or artwork, use the generate_image tool.",
-      "After generating an image, show it to the user using markdown image syntax: ![description](imageUrl).",
+      "After the generate_image tool returns a result with an imageUrl field, you MUST display it using markdown image syntax like this: ![description](THE_ACTUAL_URL_VALUE_FROM_IMAGE_URL_FIELD). Use the exact URL string from the imageUrl field, not the field name itself.",
     ].join("\n"),
     tools,
     stopWhen: stepCountIs(5),
