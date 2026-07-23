@@ -48,7 +48,7 @@ export default function Home() {
           <img
             src="https://mgx-backend-cdn.metadl.com/generate/images/1275681/2026-07-23/tbtxitqcajta/ebook-mockup-ai-without-limits.png"
             alt="AI Without Limits"
-            className="relative z-10 w-64 h-auto mx-auto drop-shadow-2xl"
+            className="relative z-10 w-64 h-auto mx-auto ebook-float"
             loading="eager"
           />
           <div className="absolute inset-0 blur-3xl bg-primary/20 rounded-full z-0" />
