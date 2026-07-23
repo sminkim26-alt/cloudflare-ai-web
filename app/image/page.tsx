@@ -1,6 +1,5 @@
 "use client";
 
-import { useLiveQuery } from "dexie-react-hooks";
 import { Loader2, Sparkles } from "lucide-react";
 import { useState, ViewTransition } from "react";
 import ChatInput, { type onSendMessageProps } from "@/components/chat-input";
@@ -11,7 +10,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TextShimmer } from "@/components/ui/text-shimmer";
 import { useImage } from "@/hooks/use-image";
 import { useScrollToBottom } from "@/hooks/use-scroll-to-bottom";
-import { db, type Message } from "@/lib/db";
 import { models } from "@/lib/models";
 
 const Page = () => {
@@ -21,30 +19,6 @@ const Page = () => {
   });
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("create");
-
-  const allImageMessages = useLiveQuery(() =>
-    db.message
-      .where("sessionId")
-      .equals("image")
-      .toArray()
-      .then((msgs) =>
-        msgs.map((m) => ({
-          ...m,
-          parts: m.parts.map((p) =>
-            p.type === "data-images"
-              ? {
-                  type: "data-images" as const,
-                  data: {
-                    urls: ((p.data as { images?: Blob[] }).images ?? []).map(
-                      URL.createObjectURL,
-                    ),
-                  },
-                }
-              : p,
-          ),
-        })),
-      ),
-  );
 
   const onSendMessage = async ({ text }: onSendMessageProps) => {
     scrollToBottom();
@@ -144,8 +118,11 @@ const Page = () => {
                 All your generated images in one place.
               </p>
             </div>
-            {allImageMessages && allImageMessages.length > 0 ? (
-              <ImageGallery messages={allImageMessages as Message[]} />
+            {messages.some((m) =>
+              m.role === "assistant" &&
+              m.parts.some((p) => p.type === "data-images"),
+            ) ? (
+              <ImageGallery messages={messages} />
             ) : (
               <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
                 <Sparkles className="size-10 mb-4 opacity-50" />
