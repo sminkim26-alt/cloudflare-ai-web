@@ -64,37 +64,30 @@ const AppSidebar = () => {
         <SidebarHeader>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={pathname === "/image"}>
-                <Link href="/image">
-                  <ImageIcon />
-                  Image
-                  <LoadingIndicator className="ml-auto" />
-                </Link>
-              </SidebarMenuButton>
-
-              {pathname === "/image" && (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <SidebarMenuAction>
-                      <MoreHorizontal />
-                    </SidebarMenuAction>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent side="right" align="start">
-                    <DropdownMenuItem
-                      onClick={() => {
-                        setDeleteConfirmOpen(true);
-                        setSessionId("image");
-                      }}
-                    >
-                      <span className="text-destructive">Delete</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )}
+              <Link href="/">
+                <Button variant="ghost" className="w-full justify-start gap-2">
+                  <Plus className="size-4" />
+                  New chat
+                </Button>
+              </Link>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarHeader>
         <SidebarContent className="scrollbar">
+          <SidebarGroup>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={pathname === "/image"}>
+                  <Link href="/image">
+                    <ImageIcon />
+                    Images
+                    <LoadingIndicator className="ml-auto" />
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroup>
+
           {sessions && sessions.length > 0 && (
             <SidebarGroup>
               <SidebarGroupLabel>Recents</SidebarGroupLabel>
@@ -137,17 +130,11 @@ const AppSidebar = () => {
         </SidebarContent>
         <SidebarFooter>
           <SidebarMenu>
-            <SidebarMenuItem className="flex items-center">
-              <Button size="icon" variant="ghost" className="size-8" disabled>
+            <SidebarMenuItem>
+              <SidebarMenuButton disabled>
                 <Cog />
-              </Button>
-
-              <Link href="/" className="ml-auto">
-                <Button variant="ghost">
-                  New Chat
-                  <Plus />
-                </Button>
-              </Link>
+                Settings
+              </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarFooter>
