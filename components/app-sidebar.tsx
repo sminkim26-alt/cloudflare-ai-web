@@ -4,7 +4,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { Cog, ImageIcon, MoreHorizontal, Plus } from "lucide-react";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import LoadingIndicator from "@/components/loading-indicator";
 import {
   AlertDialog,
@@ -36,12 +36,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { db, type Session } from "@/lib/db";
-
-interface GroupedSessions {
-  type: "today" | "last 7 days" | "last 30 days" | "earlier";
-  sessions: Session[];
-}
+import { db } from "@/lib/db";
 
 const AppSidebar = () => {
   const { session_id } = useParams();
@@ -52,36 +47,6 @@ const AppSidebar = () => {
 
   const sessions = useLiveQuery(() =>
     db.session.limit(100).reverse().sortBy("updatedAt"),
-  );
-
-  const groupedSessions = useMemo(
-    () =>
-      sessions?.reduce((groups, session) => {
-        const now = new Date();
-        const updatedAt = new Date(session.updatedAt);
-        const diffTime = now.getTime() - updatedAt.getTime();
-        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
-        let groupType: GroupedSessions["type"];
-        if (diffDays === 0) {
-          groupType = "today";
-        } else if (diffDays <= 7) {
-          groupType = "last 7 days";
-        } else if (diffDays <= 30) {
-          groupType = "last 30 days";
-        } else {
-          groupType = "earlier";
-        }
-
-        const group = groups.find((g) => g.type === groupType);
-        if (group) {
-          group.sessions.push(session);
-        } else {
-          groups.push({ type: groupType, sessions: [session] });
-        }
-        return groups;
-      }, [] as GroupedSessions[]) ?? [],
-    [sessions],
   );
 
   const handleDelete = async () => {
@@ -130,9 +95,9 @@ const AppSidebar = () => {
           </SidebarMenu>
         </SidebarHeader>
         <SidebarContent className="scrollbar">
-          {groupedSessions.map(({ type, sessions }) => (
-            <SidebarGroup key={type}>
-              <SidebarGroupLabel>{type}</SidebarGroupLabel>
+          {sessions && sessions.length > 0 && (
+            <SidebarGroup>
+              <SidebarGroupLabel>Recents</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
                   {sessions.map(({ id, name }) => (
@@ -168,7 +133,7 @@ const AppSidebar = () => {
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
-          ))}
+          )}
         </SidebarContent>
         <SidebarFooter>
           <SidebarMenu>
