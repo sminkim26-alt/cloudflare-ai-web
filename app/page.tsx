@@ -44,6 +44,15 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center h-full">
       <div className="flex flex-col justify-center h-full w-full space-y-4 px-4">
+        <div className="relative mx-auto mb-4">
+          <img
+            src="https://mgx-backend-cdn.metadl.com/generate/images/1275681/2026-07-23/tbtxitqcajta/ebook-mockup-ai-without-limits.png"
+            alt="AI Without Limits"
+            className="relative z-10 w-64 h-auto mx-auto drop-shadow-2xl"
+            loading="eager"
+          />
+          <div className="absolute inset-0 blur-3xl bg-primary/20 rounded-full z-0" />
+        </div>
         <div className="font-bold text-2xl mx-auto font-mono">
           <TextEffect per="word" preset="fade-in-blur">
             How can I assist you today?
