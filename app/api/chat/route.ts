@@ -20,6 +20,7 @@ const chatSchema = z.object({
 });
 
 export async function POST(request: Request) {
+  try {
   const body = await request.json();
   const parsed = chatSchema.safeParse(body);
 
@@ -75,4 +76,8 @@ export async function POST(request: Request) {
   });
 
   return result.toUIMessageStreamResponse();
+  } catch (error: any) {
+    console.error("Chat API error:", error);
+    return new Response(JSON.stringify({ error: error.message, stack: error.stack }), { status: 500, headers: { "Content-Type": "application/json" } });
+  }
 }
