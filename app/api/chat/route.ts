@@ -20,58 +20,6 @@ const chatSchema = z.object({
   search: z.boolean().optional(),
 });
 
-const IMAGE_MODELS = [
-  "@cf/black-forest-labs/flux-1-schnell",
-  "@cf/leonardo/lucid-origin",
-  "@cf/bytedance/stable-diffusion-xl-lightning",
-] as const;
-
-function base64ToUint8Array(base64: string) {
-  const binaryString = atob(base64);
-  return Uint8Array.from(binaryString, (m) => m.codePointAt(0) ?? 0);
-}
-
-function dataUrlFromBase64(base64: string) {
-  return `data:image/png;base64,${base64}`;
-}
-
-async function generateImage(prompt: string, imageModel?: string) {
-  const model = imageModel && IMAGE_MODELS.includes(imageModel as any)
-    ? imageModel
-    : "@cf/black-forest-labs/flux-1-schnell";
-
-  const res = await fetch(
-    `https://api.cloudflare.com/client/v4/accounts/${process.env.CF_ACCOUNT_ID}/ai/run/${model}`,
-    {
-      headers: {
-        Authorization: `Bearer ${process.env.CF_WORKERS_AI_TOKEN}`,
-      },
-      method: "POST",
-      body: JSON.stringify({ prompt }),
-    },
-  );
-
-  if (!res.ok) {
-    throw new Error(`Image generation failed: ${res.status}`);
-  }
-
-  if (
-    model === "@cf/lykon/dreamshaper-8-lcm" ||
-    model === "@cf/bytedance/stable-diffusion-xl-lightning"
-  ) {
-    const buffer = await res.arrayBuffer();
-    const base64 = btoa(
-      String.fromCharCode(...new Uint8Array(buffer)),
-    );
-    return dataUrlFromBase64(base64);
-  }
-
-  const data = (await res.json()) as {
-    result: { image: string };
-  };
-  return dataUrlFromBase64(data.result.image);
-}
-
 export async function POST(request: Request) {
   const body = await request.json();
   const parsed = chatSchema.safeParse(body);
@@ -109,7 +57,7 @@ export async function POST(request: Request) {
       Object.assign(tools, {
         generate_image: {
           description:
-            "Generate an image using Cloudflare Workers AI. Use this when the user asks to create, draw, or generate an image, picture, logo, or artwork.",
+            "Generate an image using Cloudflare Workers AI. Use this when the user asks to create, draw, or generate an image, picture, logo, or artwork. The imageUrl in the result is a relative URL path to display as a markdown image.",
           inputSchema: jsonSchema({
             type: "object",
             properties: {
@@ -120,13 +68,10 @@ export async function POST(request: Request) {
             },
             required: ["prompt"],
           }),
-          execute: async ({ prompt }: { prompt: string }): Promise<{ imageUrl: string } | { error: string }> => {
-            try {
-              const imageUrl = await generateImage(prompt);
-              return { imageUrl };
-            } catch (error: any) {
-              return { error: error.message };
-            }
+          execute: async ({ prompt }: { prompt: string }) => {
+            const encoded = encodeURIComponent(prompt);
+            const imageUrl = `/api/image/generate?prompt=${encoded}`;
+            return { imageUrl };
           },
         },
       });
