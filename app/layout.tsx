@@ -9,6 +9,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: "Cloudflare AI Web",
@@ -85,6 +86,7 @@ export default async function RootLayout({
             </SidebarInset>
           </SidebarProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
