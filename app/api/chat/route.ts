@@ -115,18 +115,12 @@ export async function POST(request: Request) {
               .string()
               .describe("A detailed text description of the image to generate"),
           }),
-          execute: async ({ prompt }) => {
+          execute: async ({ prompt }): Promise<{ imageUrl: string } | { error: string }> => {
             try {
               const imageUrl = await generateImage(prompt);
-              return {
-                imageUrl,
-                success: true,
-              };
+              return { imageUrl };
             } catch (error: any) {
-              return {
-                error: error.message,
-                success: false,
-              };
+              return { error: error.message };
             }
           },
         }),
