@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@ai-sdk/google": "^3.0.80",
+    "@ai-sdk/provider": "^4.0.3",
     "@ai-sdk/react": "^3.0.203",
     "@hookform/resolvers": "^5.4.0",
     "@radix-ui/react-accordion": "^1.2.13",
@@ -28,6 +29,7 @@
     "@streamdown/cjk": "^1.0.3",
     "@streamdown/code": "^1.1.1",
     "@streamdown/math": "^1.0.2",
+    "@vercel/analytics": "^2.0.1",
     "@vercel/sandbox": "^2.2.0",
     "ai": "^6.0.201",
     "ai-gateway-provider": "^3.1.3",
