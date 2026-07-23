@@ -57,7 +57,7 @@ export async function POST(request: Request) {
       Object.assign(tools, {
         generate_image: {
           description:
-            "Generate an image using Cloudflare Workers AI. Use this when the user asks to create, draw, or generate an image, picture, logo, or artwork. The imageUrl in the result is a relative URL path to display as a markdown image.",
+            "Generate an image using Cloudflare Workers AI. Use this when the user asks to create, draw, or generate an image, picture, logo, or artwork.",
           inputSchema: jsonSchema({
             type: "object",
             properties: {
@@ -70,8 +70,7 @@ export async function POST(request: Request) {
           }),
           execute: async ({ prompt }: { prompt: string }) => {
             const encoded = encodeURIComponent(prompt);
-            const imageUrl = `/api/image/generate?prompt=${encoded}`;
-            return { imageUrl };
+            return `Image generated. Show it using markdown: ![image](/api/image/generate?prompt=${encoded})`;
           },
         },
       });
@@ -92,7 +91,7 @@ export async function POST(request: Request) {
     system: [
       "You are a helpful assistant. Follow the user's instructions carefully. Respond using Markdown.",
       "When the user asks you to generate, create, draw, or make an image, picture, logo, illustration, or artwork, use the generate_image tool.",
-      "After the generate_image tool returns a result with an imageUrl field, you MUST display it using markdown image syntax like this: ![description](THE_ACTUAL_URL_VALUE_FROM_IMAGE_URL_FIELD). Use the exact URL string from the imageUrl field, not the field name itself.",
+      "The generate_image tool result contains the exact markdown image syntax. Copy and display it directly to the user as-is.",
     ].join("\n"),
     tools,
     stopWhen: stepCountIs(5),
