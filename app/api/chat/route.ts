@@ -2,9 +2,9 @@ import type { LanguageModelV3 } from "@ai-sdk/provider";
 import {
   convertToModelMessages,
   extractReasoningMiddleware,
+  jsonSchema,
   stepCountIs,
   streamText,
-  tool,
   wrapLanguageModel,
 } from "ai";
 import { z } from "zod";
@@ -107,15 +107,20 @@ export async function POST(request: Request) {
       });
 
       Object.assign(tools, {
-        generate_image: tool({
+        generate_image: {
           description:
             "Generate an image using Cloudflare Workers AI. Use this when the user asks to create, draw, or generate an image, picture, logo, or artwork.",
-          parameters: z.object({
-            prompt: z
-              .string()
-              .describe("A detailed text description of the image to generate"),
+          inputSchema: jsonSchema({
+            type: "object",
+            properties: {
+              prompt: {
+                type: "string",
+                description: "A detailed text description of the image to generate",
+              },
+            },
+            required: ["prompt"],
           }),
-          execute: async ({ prompt }): Promise<{ imageUrl: string } | { error: string }> => {
+          execute: async ({ prompt }: { prompt: string }): Promise<{ imageUrl: string } | { error: string }> => {
             try {
               const imageUrl = await generateImage(prompt);
               return { imageUrl };
@@ -123,7 +128,7 @@ export async function POST(request: Request) {
               return { error: error.message };
             }
           },
-        }),
+        },
       });
 
       if (process.env.VERCEL_OIDC_TOKEN) {
